@@ -2,6 +2,60 @@ import random
 import string
 from hangman_words import words
 
+
+# hangman illustrations based on the remaining number of lives
+illustrations = [
+''' 
+    |
+    |
+    O
+   /|\\
+   / \\
+''' ,
+'''
+    |
+    |
+    O
+   /|\\
+   / 
+''',
+'''
+    |
+    |
+    O
+   /|\\
+   
+''',
+'''
+    |
+    |
+    O
+   /|
+   
+''',
+'''
+    |
+    |
+    O
+    |
+   
+''',
+'''
+    |
+    |
+    O
+   
+   
+''',
+'''
+    |
+    |
+    
+
+    (RIP)
+'''
+]
+
 #Selecting our word from the hangman_words.py words list
 def clean_word(words):
     while True:
@@ -36,6 +90,7 @@ def hangman():
             
         #Show the used letters to the user and also the progress of hangman
         print(f"You have {lives} lives remaining and You have used:",' '.join(sorted(used_letters)))
+        print(illustrations[6-lives])
         word_list= [letter if letter in used_letters else '_' for letter in word]
         print('Word:',' '.join(word_list))
 
@@ -45,3 +100,4 @@ def hangman():
         print(f"Oops, You have no more lives to continue the game, the word was: {word}")
         
 hangman()
+

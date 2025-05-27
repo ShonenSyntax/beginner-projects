@@ -190,6 +190,226 @@ class RandomComputerPlayer(Player):
 
 - Demonstrates how to **encapsulate behavior** in different player types.
 ---
+---
+# ✅ Section 4: **SmartComputerPlayer** (Minimax AI)
+```python
+class SmartComputerPlayer(Player):
+    def __init__(self, letter):
+        super().__init__(letter)
+
+    def get_move(self, game):
+        if len(game.available_moves()) == 9:
+            square = random.choice(game.available_moves())
+        else:
+            square = self.minimax(game, self.letter)['position']
+        return square
+```
+🧩 Line-by-Line Breakdown
+---
+**class SmartComputerPlayer(Player):**
+- Inherits from **Player**.
+
+- Represents an intelligent AI player using the Minimax algorithm to make decisions.
+---
+**def __init__(self, letter):**
+- Standard constructor.
+
+- Initializes the player with a letter (**'X' or 'O'**).
+---
+**super().__init__(letter)**
+- Calls the constructor of the **Player** base class to set **self.letter**.
+---
+**def get_move(self, game):**
+- This method decides the next move using either:
+
+    - A **random move** (if it's the first turn),
+
+    - Or the **minimax algorithm** to pick the optimal move.
+---
+**if len(game.available_moves()) == 9:**
+- If all 9 squares are available, it's the very first move.
+
+- Choosing randomly saves computational time (there’s no strategy in turn 1 anyway).
+---
+**square = random.choice(game.available_moves())**
+- Picks a random square on the first move.
+---
+**square = self.minimax(game, self.letter)['position']**
+- Otherwise, it calls **minimax()** to find the best move.
+
+- **minimax()** returns a dictionary with **position** and **score**.
+
+- It takes the '**position**' value (the best move found by the algorithm).
+---
+**return square**
+- Returns the move selected either randomly or via the Minimax algorithm.
+---
+🧠 Concepts Reinforced
+---
+**Concept	Explanation**
+- Inheritance	**SmartComputerPlayer** is a specialized type of **Player**.
+- Decision Logic	Combines a simple heuristic (random first move) with deep logic (minimax).
+- Algorithm Switching	Uses randomness early, strategic depth later.
+- Game-State Access	Interacts with **game.available_moves()** to make decisions.
+---
+🤔 Why Use Minimax?
+---
+- Minimax simulates **every possible outcome** of the game.
+
+- It assumes that the **opponent also plays optimally**, and tries to minimize the worst-case scenario.
+
+- This makes **SmartComputerPlayer unbeatable** in regular Tic Tac Toe.
+---
+---
+# ✅ Section 5: **Minimax Algorithm** (Recursive Decision-Making)
+```python
+def minimax(self, state, player):
+    max_player = self.letter  # yourself
+    other_player = 'O' if player == 'X' else 'X'
+
+    # base case: check for terminal state
+    if state.current_winner == other_player:
+        return {
+            'position': None,
+            'score': 1 * (state.num_empty_squares() + 1) if other_player == max_player else -1 * (state.num_empty_squares() + 1)
+        }
+    elif not state.empty_squares():
+        return {'position': None, 'score': 0}
+
+    # recursive case
+    if player == max_player:
+        best = {'position': None, 'score': -math.inf}  # maximize the score
+    else:
+        best = {'position': None, 'score': math.inf}   # minimize the score
+
+    for possible_move in state.available_moves():
+        # simulate the move
+        state.make_move(possible_move, player)
+        sim_score = self.minimax(state, other_player)  # recursive call
+
+        # undo the move
+        state.board[possible_move] = ' '
+        state.current_winner = None
+        sim_score['position'] = possible_move
+
+        # update the best score
+        if player == max_player:
+            if sim_score['score'] > best['score']:
+                best = sim_score
+        else:
+            if sim_score['score'] < best['score']:
+                best = sim_score
+
+    return best
+```
+🧩 Line-by-Line Breakdown
+---
+**def minimax(self, state, player):**
+- Recursive function that simulates all possible future moves.
+
+- **state**: the current game state (board, moves, etc.)
+
+- **player**: whose turn it is in this simulation.
+---
+**max_player = self.letter**
+- The AI player we’re optimizing for.
+
+- This is the “**main character**” from the perspective of the AI.
+---
+**other_player = 'O' if player == 'X' else 'X'**
+- Identifies the opponent.
+---
+**if state.current_winner == other_player:**
+- If the opponent won in the last move, return the score accordingly.
+---
+**return {'position': None, 'score': ...}**
+- A **terminal state**: either a win, loss, or draw.
+
+- The score is adjusted by how many empty squares are left to **prefer quicker wins and slower losses**.
+
+- For example:
+
+    - **Win in 2 moves (more empty squares) → higher score**
+
+    - **Lose in 2 moves → worse score**
+---
+**elif not state.empty_squares():**
+- It’s a draw (no winner and no empty squares).
+
+- Returns a score of 0.
+---
+## 🎯 Recursion Starts Here
+**if player == max_player:**
+- We are the AI → maximize the score.
+---
+**best = {'position': None, 'score': -math.inf}**
+- Start from the worst possible score, so we can find the best one.
+---
+**else:**
+- Opponent’s turn → minimize the score (make it harder for us).
+---
+**best = {'position': None, 'score': math.inf}**
+- Start from the highest score, so we can go lower.
+---
+## 🔄 Loop Over All Moves
+**for possible_move in state.available_moves():**
+- Try every available move.
+---
+**state.make_move(possible_move, player)**
+- Simulates placing a move on the board.
+---
+**sim_score = self.minimax(state, other_player)**
+- Recursive call: switch turns and simulate what the opponent does.
+---
+**state.board[possible_move] = ' '**
+- Undo the move to restore the board (backtracking).
+---
+**state.current_winner = None**
+- Also reset the **current_winner** property.
+---
+**sim_score['position'] = possible_move**
+- Attach the move we tried to the score result.
+---
+**if player == max_player and sim_score['score'] > best['score']:**
+- AI chooses the **highest score**.
+---
+**elif player != max_player and sim_score['score'] < best['score']:**
+- Opponent chooses the **lowest score**.
+---
+**best = sim_score**
+- Save the best score and its move.
+---
+**return best**
+- Final decision: returns the best move with its score.
+---
+🧠 Concepts Reinforced
+---
+**Concept	Explanation**
+- Recursion	The function calls itself with updated game states.
+- Backtracking	Each simulated move is undone before the next trial.
+- Game Tree Evaluation	It explores all possible outcomes of the game.
+- Minimax Strategy	AI tries to maximize its gain and minimize opponent's chances.
+- Depth-Aware Scoring	Faster wins and slower losses are valued more.
+---
+---
+**This is the core AI brain of the game and a great introduction to search algorithms and adversarial decision making.**
+---
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

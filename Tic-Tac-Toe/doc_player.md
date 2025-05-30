@@ -10,8 +10,8 @@
 
 5. **Minimax Algorithm (Recursive Decision-Making)**
 ---
----
 # ✅ Section 1: Base **Player** Class
+---
 ```python
 class Player():
     def __init__(self, letter):
@@ -50,8 +50,8 @@ This sets up a shared structure: every kind of player (human, random AI, smart A
 Using this structure allows the main game loop to treat all players the same, regardless of whether it's a human or an AI.
 
 --- 
----
 # ✅ Section 2: **HumanPlayer** (User Input)
+---
 ```python
 class HumanPlayer(Player):
     def __init__(self, letter):
@@ -134,8 +134,8 @@ class HumanPlayer(Player):
 
 - Clean user experience: keeping them informed and in control
 ---
----
 # ✅ Section 3: **RandomComputerPlayer** (Basic AI)
+---
 ```python
 class RandomComputerPlayer(Player):
     def __init__(self, letter):
@@ -190,8 +190,8 @@ class RandomComputerPlayer(Player):
 
 - Demonstrates how to **encapsulate behavior** in different player types.
 ---
----
 # ✅ Section 4: **SmartComputerPlayer** (Minimax AI)
+---
 ```python
 class SmartComputerPlayer(Player):
     def __init__(self, letter):
@@ -260,8 +260,8 @@ class SmartComputerPlayer(Player):
 
 - This makes **SmartComputerPlayer unbeatable** in regular Tic Tac Toe.
 ---
----
 # ✅ Section 5: **Minimax Algorithm** (Recursive Decision-Making)
+---
 ```python
 def minimax(self, state, player):
     max_player = self.letter  # yourself
@@ -394,7 +394,7 @@ def minimax(self, state, player):
 ---
 **This is the core AI brain of the game and a great introduction to search algorithms and adversarial decision making.**
 ---
----
+
 
 
 
